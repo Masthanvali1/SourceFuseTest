@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 
-public class FirstTest {
+public class SourceFuseTest {
 	
     private WebDriver driver;
 
@@ -30,7 +30,7 @@ public class FirstTest {
 	
 	@AfterTest
 	public void closeTheBrowser() {
-//		driver.quit();
+		driver.quit();
 	}
 	
 	
