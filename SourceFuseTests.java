@@ -2,6 +2,11 @@ package tests;
 
 import static org.testng.Assert.assertTrue;
 import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -160,5 +165,129 @@ public class SourceFuseTest {
 		softAssert.assertTrue(startTime.isEnabled(), "Start time input field is not getting enabled");
 		
 		softAssert.assertAll();
+	}
+	
+	@Test(description = "Verify DB entry after submitting the form using JDBC connection.")
+	public void verifyFormData() {
+		
+		//Submit the form
+		
+		WebElement firstName = driver.findElement(By.xpath("//div[@id='fnameInput']/input"));
+		WebElement lastName =driver.findElement(By.xpath("//div[@id='lnameInput']/input"));
+		WebElement email = driver.findElement(By.xpath("//div[@id='emailInput']/input"));
+		WebElement currentCompany = driver.findElement(By.xpath("//div[@id='curCompanyInput']/input"));
+		WebElement mobileNumber = driver.findElement(By.xpath("//div[@id='mobInput']/input"));
+		WebElement dateOfBirth = driver.findElement(By.xpath("//div[@class='input-group date']/input"));
+		WebElement position = driver.findElement(By.xpath("//div[@id='positionInput']/input"));
+		WebElement requiredSalary = driver.findElement(By.xpath("//div[@id='salaryInput']/input"));
+		WebElement portfolio = driver.findElement(By.xpath("//div[@id='portfolioInput']/input"));
+		WebElement startTime = driver.findElement(By.xpath("//div[@id='whenStartInput']/input"));
+		WebElement yesRadioButton = driver.findElement(By.id("yes"));
+		WebElement UploadFIle = driver.findElement(By.xpath("//input[@type='file']"));
+		WebElement SubmitButton = driver.findElement(By.xpath("//button[text()='Submit Form']"));
+		
+		String FirstName = "Masthanvali";
+		String LastName = "Shaik";
+		String Email = "MasthanvaliSMVVALi@gmail.com";
+		String CurrentCompany = "QualitLabs";
+		String MobileNumber = "8179705706";
+		String DateOfBirth = "02/01/2021";
+		String Position = "Automation Test Engineer";
+		String RequiredSalary  = "700000";
+		String Portfolio = "Google.com";
+		String StartTime = "in 2 months";
+		
+		firstName.sendKeys(FirstName);
+		lastName.sendKeys(LastName);
+		email.sendKeys(Email);
+		currentCompany.sendKeys(CurrentCompany);
+		mobileNumber.sendKeys(MobileNumber);
+		dateOfBirth.sendKeys(DateOfBirth);
+		position.sendKeys(Position);
+		requiredSalary.sendKeys(RequiredSalary);
+		portfolio.sendKeys(Portfolio);
+		startTime.sendKeys(StartTime);
+		UploadFIle.sendKeys("C:\\Users\\91817\\Desktop\\pics\\48406048_798899623786569_4400480782603255808_o.jpg");
+		yesRadioButton.click();
+		SubmitButton.click();
+
+		//Verifying values in DB
+		
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet resultSet = null;
+		 
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:4444/testdb", "Masthanvali007", "test@123");
+		stmt = conn.createStatement();
+		resultSet = stmt.executeQuery("select * from SFtable");
+		 
+		
+		assertEquals(resultSet.getString(1), FirstName); 
+		assertEquals(resultSet.getString(1), LastName); 
+		assertEquals(resultSet.getString(1), Email);
+		assertEquals(resultSet.getString(1), CurrentCompany);
+		assertEquals(resultSet.getString(1), MobileNumber);
+		assertEquals(resultSet.getString(1), DateOfBirth);
+		assertEquals(resultSet.getString(1), Position);
+		assertEquals(resultSet.getString(1), RequiredSalary);
+		assertEquals(resultSet.getString(1), Portfolio);
+		assertEquals(resultSet.getString(1), StartTime);	
+	}
+	
+	@Test(description = "Verify Email is triggered or not after submitting the form using assertion on DB considering an email trigger column as email_sent.  .")
+	public void verifyemail_sentData() {
+		
+		//Submit the form
+		
+		WebElement firstName = driver.findElement(By.xpath("//div[@id='fnameInput']/input"));
+		WebElement lastName =driver.findElement(By.xpath("//div[@id='lnameInput']/input"));
+		WebElement email = driver.findElement(By.xpath("//div[@id='emailInput']/input"));
+		WebElement currentCompany = driver.findElement(By.xpath("//div[@id='curCompanyInput']/input"));
+		WebElement mobileNumber = driver.findElement(By.xpath("//div[@id='mobInput']/input"));
+		WebElement dateOfBirth = driver.findElement(By.xpath("//div[@class='input-group date']/input"));
+		WebElement position = driver.findElement(By.xpath("//div[@id='positionInput']/input"));
+		WebElement requiredSalary = driver.findElement(By.xpath("//div[@id='salaryInput']/input"));
+		WebElement portfolio = driver.findElement(By.xpath("//div[@id='portfolioInput']/input"));
+		WebElement startTime = driver.findElement(By.xpath("//div[@id='whenStartInput']/input"));
+		WebElement yesRadioButton = driver.findElement(By.id("yes"));
+		WebElement UploadFIle = driver.findElement(By.xpath("//input[@type='file']"));
+		WebElement SubmitButton = driver.findElement(By.xpath("//button[text()='Submit Form']"));
+		
+		String FirstName = "Masthanvali";
+		String LastName = "Shaik";
+		String Email = "MasthanvaliSMVVALi@gmail.com";
+		String CurrentCompany = "QualitLabs";
+		String MobileNumber = "8179705706";
+		String DateOfBirth = "02/01/2021";
+		String Position = "Automation Test Engineer";
+		String RequiredSalary  = "700000";
+		String Portfolio = "Google.com";
+		String StartTime = "in 2 months";
+		
+		firstName.sendKeys(FirstName);
+		lastName.sendKeys(LastName);
+		email.sendKeys(Email);
+		currentCompany.sendKeys(CurrentCompany);
+		mobileNumber.sendKeys(MobileNumber);
+		dateOfBirth.sendKeys(DateOfBirth);
+		position.sendKeys(Position);
+		requiredSalary.sendKeys(RequiredSalary);
+		portfolio.sendKeys(Portfolio);
+		startTime.sendKeys(StartTime);
+		UploadFIle.sendKeys("C:\\Users\\91817\\Desktop\\pics\\48406048_798899623786569_4400480782603255808_o.jpg");
+		yesRadioButton.click();
+		SubmitButton.click();
+
+		//	Verifying if Email is triggered in DB
+		
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet resultSet = null;
+		 
+		conn = DriverManager.getConnection("jdbc:mysql://localhost:4444/testdb", "Masthanvali007", "test@123");
+		stmt = conn.createStatement();
+		resultSet = stmt.executeQuery("select email_sent from SFtable");
+		 
+		assertEquals(resultSet.getBoolean(1), true); 
 	}
 }
